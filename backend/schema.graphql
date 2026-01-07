@@ -40,11 +40,14 @@ type LoginOutput {
 
 type Mutation {
   createCategory(data: CreateCategoryInput!): CategoryModel!
+  deleteCategory(id: String!): Boolean!
   login(data: LoginInput!): LoginOutput!
   register(data: RegisterInput!): RegisterOutput!
+  updateCategory(data: UpdateCategoryInput!, id: String!): CategoryModel!
 }
 
 type Query {
+  getAllCategory: [CategoryModel!]!
   getUser(id: String!): UserModel!
 }
 
@@ -58,6 +61,13 @@ type RegisterOutput {
   refreshToken: String!
   token: String!
   user: UserModel!
+}
+
+input UpdateCategoryInput {
+  color: String
+  description: String
+  icon: String
+  name: String
 }
 
 type UserModel {

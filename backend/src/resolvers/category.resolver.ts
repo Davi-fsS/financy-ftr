@@ -1,6 +1,6 @@
-import { Arg, FieldResolver, Mutation, Resolver, Root, UseMiddleware } from "type-graphql";
+import { Arg, FieldResolver, Mutation, Query, Resolver, Root, UseMiddleware } from "type-graphql";
 import { CategoryModel } from "../models/category.model";
-import { CreateCategoryInput } from "../dtos/input/category.input";
+import { CreateCategoryInput, UpdateCategoryInput } from "../dtos/input/category.input";
 import { CategoryService } from "../services/category.service";
 import { GqlUser } from "../graphql/decorators/user.decorator";
 import { User } from "../../generated/prisma/client";
@@ -17,6 +17,22 @@ export class CategoryResolver{
     @Mutation(() => CategoryModel)
     async createCategory(@Arg("data", () => CreateCategoryInput) data: CreateCategoryInput, @GqlUser() user: User) : Promise<CategoryModel>{
         return this.categoryService.createCategory(data, user.id);
+    }
+
+    @Query(() => [CategoryModel])
+    async getAllCategory(@GqlUser() user: User) : Promise<CategoryModel[]>{
+        return this.categoryService.getAllCategory(user.id);
+    }
+
+    @Mutation(() => CategoryModel)
+    async updateCategory(@Arg("data", () => UpdateCategoryInput) data: UpdateCategoryInput,
+                    @Arg("id", () => String) id: string): Promise<CategoryModel>{
+        return this.categoryService.updateCategory(id, data);
+    }
+
+    @Mutation(() => Boolean)
+    async deleteCategory(@Arg("id", () => String) id: string) : Promise<Boolean>{
+        return this.categoryService.deleteCategory(id);
     }
 
     @FieldResolver(() => UserModel)
