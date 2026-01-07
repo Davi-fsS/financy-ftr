@@ -31,7 +31,7 @@ model Transaction {
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-  value Int
+  value Float
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

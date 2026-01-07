@@ -1,4 +1,4 @@
-import { Field, GraphQLISODateTime, InputType } from "type-graphql"
+import { Field, Float, GraphQLISODateTime, InputType } from "type-graphql"
 
 @InputType()
 export class CreateTransactionInput {
@@ -11,7 +11,7 @@ export class CreateTransactionInput {
     @Field(() => String)
     categoryId!: string
     
-    @Field(() => Number)
+    @Field(() => Float)
     value!: number
 }
 
@@ -26,6 +26,6 @@ export class UpdateTransactionInput {
     @Field(() => String, { nullable: true })
     categoryId?: string
     
-    @Field(() => Number, { nullable: true })
+    @Field(() => Float, { nullable: true })
     value?: number
 }
