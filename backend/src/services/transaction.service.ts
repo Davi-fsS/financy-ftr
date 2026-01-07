@@ -38,7 +38,7 @@ export class TransactionService {
         })
     }
     
-    async updateTransaction(id: string, data: UpdateTransactionInput){
+    async updateTransaction(id: string, data: UpdateTransactionInput, userId: string){
         const transaction = await prisma.transaction.findUnique({
             where: {
                 id
@@ -46,6 +46,8 @@ export class TransactionService {
         });
 
         if(!transaction) throw new Error("Transação não encontrada");
+
+        if(transaction.userId !== userId) throw new Error("Transação não encontrada");
 
         if(data.categoryId){
             const category = prisma.category.findUnique({
@@ -68,7 +70,7 @@ export class TransactionService {
         })
     }
 
-    async deleteTransaction(id: string){
+    async deleteTransaction(id: string, userId: string){
         try{
             const transaction = await prisma.transaction.findUnique({
                 where: {
@@ -77,6 +79,8 @@ export class TransactionService {
             });
     
             if(!transaction) throw new Error("Transação não encontrada");
+
+            if(transaction.userId !== userId) throw new Error("Transação não encontrada");
     
             await prisma.transaction.delete({
                 where: { id }

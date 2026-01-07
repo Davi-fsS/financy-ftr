@@ -29,13 +29,13 @@ export class TransactionResolver{
     }
 
     @Mutation(() => TransactionModel)
-    async updateTransaction(@Arg("data", () => UpdateTransactionInput) data: UpdateTransactionInput, @Arg("id", () => String) id: string) : Promise<TransactionModel>{
-        return this.transactionService.updateTransaction(id, data);
+    async updateTransaction(@Arg("data", () => UpdateTransactionInput) data: UpdateTransactionInput, @GqlUser() user: User, @Arg("id", () => String) id: string) : Promise<TransactionModel>{
+        return this.transactionService.updateTransaction(id, data, user.id);
     }
 
     @Mutation(() => Boolean)
-    async deleteTransaction(@Arg("id", () => String) id: string) : Promise<Boolean>{
-        return this.transactionService.deleteTransaction(id);
+    async deleteTransaction(@Arg("id", () => String) id: string, @GqlUser() user: User) : Promise<Boolean>{
+        return this.transactionService.deleteTransaction(id, user.id);
     }
 
     @FieldResolver(() => UserModel)

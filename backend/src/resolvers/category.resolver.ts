@@ -28,13 +28,13 @@ export class CategoryResolver{
 
     @Mutation(() => CategoryModel)
     async updateCategory(@Arg("data", () => UpdateCategoryInput) data: UpdateCategoryInput,
-                    @Arg("id", () => String) id: string): Promise<CategoryModel>{
-        return this.categoryService.updateCategory(id, data);
+                    @Arg("id", () => String) id: string, @GqlUser() user: User): Promise<CategoryModel>{
+        return this.categoryService.updateCategory(id, data, user.id);
     }
 
     @Mutation(() => Boolean)
-    async deleteCategory(@Arg("id", () => String) id: string) : Promise<Boolean>{
-        return this.categoryService.deleteCategory(id);
+    async deleteCategory(@Arg("id", () => String) id: string, @GqlUser() user: User) : Promise<Boolean>{
+        return this.categoryService.deleteCategory(id, user.id);
     }
 
     @FieldResolver(() => UserModel)

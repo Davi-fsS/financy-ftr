@@ -38,7 +38,7 @@ export class CategoryService {
         })
     }
     
-    async updateCategory(id: string, data: UpdateCategoryInput){
+    async updateCategory(id: string, data: UpdateCategoryInput, userId: string){
         const category = await prisma.category.findUnique({
             where: {
                 id
@@ -46,6 +46,8 @@ export class CategoryService {
         });
 
         if(!category) throw new Error("Categoria não encontrada");
+
+        if(category.userId !== userId) throw new Error("Categoria não encontrada");
 
         return prisma.category.update({
             where: { id },
@@ -58,7 +60,7 @@ export class CategoryService {
         })
     }
 
-    async deleteCategory(id: string){
+    async deleteCategory(id: string, userId: string){
         try{
             const category = await prisma.category.findUnique({
                 where: {
@@ -67,6 +69,8 @@ export class CategoryService {
             });
     
             if(!category) throw new Error("Categoria não encontrada");
+
+            if(category.userId !== userId) throw new Error("Categoria não encontrada");
     
             await prisma.category.delete({
                 where: { id }
