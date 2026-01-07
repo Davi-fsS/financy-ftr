@@ -38,6 +38,17 @@ export class TransactionService {
         })
     }
     
+    async sumValueTransactionByCategory(categoryId: string){
+        return (await prisma.transaction.aggregate({
+            where: {
+                categoryId
+            },
+            _sum: {
+                value: true
+            }
+        }))._sum.value || 0;
+    }
+    
     async updateTransaction(id: string, data: UpdateTransactionInput, userId: string){
         const transaction = await prisma.transaction.findUnique({
             where: {

@@ -21,7 +21,7 @@ export class CategoryModel {
     
     @Field(() => String)
     userId!: string
-    
+
     @Field(() => UserModel, { nullable: true })
     user?: UserModel
 
