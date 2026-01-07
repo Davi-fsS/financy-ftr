@@ -1,23 +1,26 @@
 import { Field, GraphQLISODateTime, ID, ObjectType } from "type-graphql";
 import { UserModel } from "./user.model";
-import { TransactionModel } from "./transaction.model";
+import { CategoryModel } from "./category.model";
 
 @ObjectType()
-export class CategoryModel {
+export class TransactionModel {
     @Field(() => ID)
     id!: string
 
     @Field(() => String)
-    name!: string
-
-    @Field(() => String)
     description!: string
 
+    @Field(() => GraphQLISODateTime)
+    date!: Date
+
     @Field(() => String)
-    icon!: string
-    
-    @Field(() => String)
-    color!: string
+    categoryId!: string
+
+    @Field(() => CategoryModel)
+    category?: CategoryModel
+
+    @Field(() => Number)
+    value!: number
     
     @Field(() => String)
     userId!: string
@@ -30,7 +33,4 @@ export class CategoryModel {
 
     @Field(() => GraphQLISODateTime)
     updatedAt!: Date
-
-    // @Field(() => [TransactionModel], { nullable: true })
-    // transactions?: TransactionModel[]
 }

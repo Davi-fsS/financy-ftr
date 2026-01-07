@@ -7,12 +7,14 @@ import { User } from "../../generated/prisma/client";
 import { IsAuth } from "../middlewares/auth.middleware";
 import { UserModel } from "../models/user.model";
 import { UserService } from "../services/user.service";
+import { TransactionService } from "../services/transaction.service";
 
 @Resolver(() => CategoryModel)
 @UseMiddleware(IsAuth)
 export class CategoryResolver{
     private categoryService = new CategoryService();
     private userService = new UserService();
+    private transactionService = new TransactionService();
 
     @Mutation(() => CategoryModel)
     async createCategory(@Arg("data", () => CreateCategoryInput) data: CreateCategoryInput, @GqlUser() user: User) : Promise<CategoryModel>{
@@ -38,5 +40,10 @@ export class CategoryResolver{
     @FieldResolver(() => UserModel)
     async user(@Root() category: CategoryModel) : Promise<UserModel>{
         return this.userService.findUser(category.userId);
+    }
+
+    @FieldResolver(() => Number)
+    async countTransactions(@Root() category: CategoryModel) : Promise<Number>{
+        return this.transactionService.countTransactionByCategory(category.id);
     }
 }

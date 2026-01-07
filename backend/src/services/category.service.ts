@@ -22,6 +22,22 @@ export class CategoryService {
         })
     }
     
+    async findCategory(id: string){
+        return prisma.category.findUnique({
+            where: {
+                id
+            }
+        })
+    }
+    
+    async countCategory(id: string){
+        return prisma.category.count({
+            where: {
+                id
+            }
+        })
+    }
+    
     async updateCategory(id: string, data: UpdateCategoryInput){
         const category = await prisma.category.findUnique({
             where: {
