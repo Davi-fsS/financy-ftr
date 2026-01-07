@@ -30,7 +30,4 @@ export class CategoryModel {
 
     @Field(() => GraphQLISODateTime)
     updatedAt!: Date
-
-    // @Field(() => [TransactionModel], { nullable: true })
-    // transactions?: TransactionModel[]
 }
