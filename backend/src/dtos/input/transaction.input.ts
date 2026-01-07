@@ -7,6 +7,9 @@ export class CreateTransactionInput {
 
     @Field(() => GraphQLISODateTime)
     date!: Date
+
+    @Field(() => String)
+    type!: string
     
     @Field(() => String)
     categoryId!: string
@@ -22,6 +25,9 @@ export class UpdateTransactionInput {
 
     @Field(() => GraphQLISODateTime, { nullable: true })
     date?: Date
+
+    @Field(() => String)
+    type?: string
     
     @Field(() => String, { nullable: true })
     categoryId?: string

@@ -28,6 +28,7 @@ input CreateTransactionInput {
   categoryId: String!
   date: DateTimeISO!
   description: String!
+  type: String!
   value: Float!
 }
 
@@ -45,6 +46,11 @@ type LoginOutput {
   refreshToken: String!
   token: String!
   user: UserModel!
+}
+
+type MonthBalanceModel {
+  expenses: Float!
+  revenues: Float!
 }
 
 type Mutation {
@@ -83,6 +89,9 @@ type TransactionModel {
   date: DateTimeISO!
   description: String!
   id: ID!
+  monthBalance: MonthBalanceModel!
+  totalBalance: Float!
+  type: String!
   updatedAt: DateTimeISO!
   user: UserModel
   userId: String!
@@ -100,6 +109,7 @@ input UpdateTransactionInput {
   categoryId: String
   date: DateTimeISO
   description: String
+  type: String!
   value: Float
 }
 

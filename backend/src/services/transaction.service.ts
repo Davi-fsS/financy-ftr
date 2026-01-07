@@ -15,6 +15,7 @@ export class TransactionService {
             data: {
                 description: data.description,
                 date: data.date,
+                type: data.type,
                 categoryId: data.categoryId,
                 value: data.value,
                 userId: userId
@@ -48,6 +49,69 @@ export class TransactionService {
             }
         }))._sum.value || 0;
     }
+
+    async getTotalBalance(userId: string){
+        const revenues = await prisma.transaction.aggregate({
+            where: {
+                userId, 
+                type: "Entrada"
+            },
+            _sum: {
+                value: true
+            }
+        });
+    
+        const expenses = await prisma.transaction.aggregate({
+            where: {
+                userId, 
+                type: "Saida"
+            },
+            _sum: {
+                value: true
+            }
+        });
+    
+        return (revenues._sum.value || 0) - (expenses._sum.value || 0);
+    }
+    
+    async getMonthBalance(userId: string){
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+        const revenuesOfMonth = await prisma.transaction.aggregate({
+            where: {
+                userId, 
+                type: "Entrada",
+                date: {
+                    gte: startOfMonth,
+                    lte: endOfMonth
+                }
+            },
+            _sum: {
+                value: true
+            }
+        });
+    
+        const expensesOfMonth = await prisma.transaction.aggregate({
+            where: {
+                userId, 
+                type: "Saida",
+                date: {
+                    gte: startOfMonth,
+                    lte: endOfMonth
+                }
+            },
+            _sum: {
+                value: true
+            }
+        });
+    
+        return {
+            revenues: revenuesOfMonth._sum.value || 0,
+            expenses: expensesOfMonth._sum.value || 0,
+        };
+    }
     
     async updateTransaction(id: string, data: UpdateTransactionInput, userId: string){
         const transaction = await prisma.transaction.findUnique({
@@ -75,6 +139,7 @@ export class TransactionService {
             data: {
                 description: data.description,
                 date: data.date,
+                type: data.type,
                 categoryId: data.categoryId,
                 value: data.value
             }

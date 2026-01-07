@@ -28,6 +28,8 @@ model Transaction {
   description String
   date        DateTime
 
+  type String
+
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 

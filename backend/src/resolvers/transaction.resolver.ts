@@ -1,4 +1,4 @@
-import { Arg, FieldResolver, Mutation, Query, Resolver, Root, UseMiddleware } from "type-graphql";
+import { Arg, Field, FieldResolver, Float, Mutation, ObjectType, Query, Resolver, Root, UseMiddleware } from "type-graphql";
 import { TransactionModel } from "../models/transaction.model";
 import { IsAuth } from "../middlewares/auth.middleware";
 import { CreateTransactionInput, UpdateTransactionInput } from "../dtos/input/transaction.input";
@@ -9,6 +9,15 @@ import { UserModel } from "../models/user.model";
 import { UserService } from "../services/user.service";
 import { CategoryModel } from "../models/category.model";
 import { CategoryService } from "../services/category.service";
+
+@ObjectType()
+export class MonthBalanceModel {
+    @Field(() => Float)
+    revenues!: number;
+
+    @Field(() => Float)
+    expenses!: number;
+}
 
 @Resolver(() => TransactionModel)
 @UseMiddleware(IsAuth)
@@ -46,5 +55,15 @@ export class TransactionResolver{
     @FieldResolver(() => CategoryModel)
     async category(@Root() transaction: TransactionModel) : Promise<CategoryModel | null>{
         return this.categoryService.findCategory(transaction.categoryId);
+    }
+
+    @FieldResolver(() => Number)
+    async totalBalance(@GqlUser() user: User) : Promise<Number>{
+        return this.transactionService.getTotalBalance(user.id);
+    }
+    
+    @FieldResolver(() => MonthBalanceModel)
+    async monthBalance(@GqlUser() user: User) : Promise<MonthBalanceModel>{
+        return this.transactionService.getMonthBalance(user.id);
     }
 }

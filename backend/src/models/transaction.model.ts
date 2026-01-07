@@ -23,6 +23,9 @@ export class TransactionModel {
     value!: number
     
     @Field(() => String)
+    type!: string
+
+    @Field(() => String)
     userId!: string
     
     @Field(() => UserModel, { nullable: true })
