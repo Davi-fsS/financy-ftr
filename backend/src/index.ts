@@ -1,6 +1,7 @@
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";
 import express from "express";
+import cors from "cors";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { AuthResolver } from "./resolvers/auth.resolver";
@@ -23,6 +24,8 @@ async function bootstrap(){
     });
 
     await server.start();
+
+    app.use(cors())
 
     app.use(
         "/graphql",
