@@ -7,13 +7,39 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UserRoundPlus } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuthStore } from "@/stores/auth";
+import { toast } from "sonner";
 
 export function Login(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async() => {
+    const login = useAuthStore((state) => state.login);
+    
+    const handleSubmit = async(e: React.FormEvent) => {
+        e.preventDefault();
 
+        setLoading(true);
+
+        try{
+            const loginMutate = await login({
+                email,
+                password
+            });
+
+            if(loginMutate){
+                toast.success("Login realizado com sucesso!");
+                
+            }
+        }
+        catch(error){
+            toast.error("Erro ao realizar o login");
+            console.log(error);
+        }
+        finally{
+            setLoading(false);
+        }
     };
 
     return <div className="flex flex-col min-h-[calc(100vh-4rem)] items-center justify-center gap-6">
@@ -67,7 +93,7 @@ export function Login(){
                         <Label className="text-primary">Recuperar senha</Label>
                     </div>
 
-                    <Button type="submit" className="w-full py-6">
+                    <Button type="submit" className="w-full py-6" disabled={loading}>
                         Entrar
                     </Button>
                 </form>
