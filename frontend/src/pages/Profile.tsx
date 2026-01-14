@@ -1,12 +1,12 @@
 import { Page } from "@/components/Page";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { getAvatarFallback } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth";
-import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import { Label } from "@radix-ui/react-label";
-import { Separator } from "@radix-ui/react-separator";
 import { LogOut } from "lucide-react";
 import { useState } from "react";
 
@@ -41,7 +41,7 @@ export function ProfilePage(){
                     </CardDescription>
                 </CardHeader>
 
-                <Separator className="my-4"/>
+                <Separator className="my-5 w-[90%] mx-auto"/>
 
                 <CardContent className="my-4">
                     <form onSubmit={handleSubmit} className="space-y-4">

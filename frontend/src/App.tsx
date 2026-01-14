@@ -2,11 +2,11 @@ import { Layout } from './components/Layout'
 import { Route, Routes } from "react-router-dom";
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
-import { CategoryPage } from './pages/Category';
 import { TransactionPage } from './pages/Transaction';
 import { DashboardPage } from './pages/Dashboard';
 import { useAuthStore } from './stores/auth';
 import { ProfilePage } from './pages/Profile';
+import { CategoryPage } from './pages/Category';
 
 function App() {
   const { isAuthenticated } = useAuthStore();

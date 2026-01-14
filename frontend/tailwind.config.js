@@ -58,7 +58,50 @@
     				'3': 'hsl(var(--chart-3))',
     				'4': 'hsl(var(--chart-4))',
     				'5': 'hsl(var(--chart-5))'
-    			}
+    			},
+				brand: {
+					dark: '#124B2B',
+					base: '#1F6F43'
+				},
+				feedback: {
+					danger: '#EF4444',
+					success: '#19AD70'
+				},
+				blue: {
+					dark: '#1D4ED8',
+					base: '#2563EB',
+					light: '#DBEAFE'
+				},
+				purple: {
+					dark: '#7E22CE',
+					base: '#9333EA',
+					light: '#F3E8FF'
+				},
+				pink: {
+					dark: '#BE185D',
+					base: '#DB2777',
+					light: '#FCE7F3'
+				},
+				red: {
+					dark: '#B91C1C',
+					base: '#DC2626',
+					light: '#FEE2E2'
+				},
+				orange: {
+					dark: '#C2410C',
+					base: '#EA580C',
+					light: '#FFEDD5'
+				},
+				yellow: {
+					dark: '#A16207',
+					base: '#CA8A04',
+					light: '#F7F3CA'
+				},
+				green: {
+					dark: '#15803D',
+					base: '#16A34A',
+					light: '#EOFAE9'
+				}
     		},
     		borderRadius: {
     			lg: 'var(--radius)',
