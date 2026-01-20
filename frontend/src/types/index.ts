@@ -16,3 +16,20 @@ export interface LoginInput {
     email: string
     password: string
 }
+
+export interface Transaction {
+    id: string
+    description: string
+    date: string
+    categoryId: string
+    value: number
+    type: string
+}
+
+export interface Category {
+    id: string
+    name: string
+    description: string
+    icon: string
+    color: string
+}
