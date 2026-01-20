@@ -14,8 +14,16 @@ export function TransactionPage(){
             date: "2025-11-30",
             categoryName: "Alimentação",
             type: "Saída",
-            value: -89.50
-        }
+            value: 89.50
+        },
+        {
+            id: "2",
+            description: "Venda no Ibira",
+            date: "2026-01-15",
+            categoryName: "Alimentação",
+            type: "Entrada",
+            value: 30
+        },
     ];
 
     return <Page>
