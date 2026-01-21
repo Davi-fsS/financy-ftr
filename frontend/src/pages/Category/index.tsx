@@ -4,8 +4,12 @@ import { Label } from "@/components/ui/label";
 import { ArrowUpDown, Plus, Tag, Ticket, Utensils } from "lucide-react";
 import { CardResume } from "./components/CardResume";
 import { CardCategory } from "./components/CardCategory";
+import { DialogCategory } from "./components/DialogCategory";
+import { useState } from "react";
 
 export function CategoryPage(){
+
+    const [openModal, setOpenModal] = useState<boolean>(false);
 
     const categories = [
         {
@@ -108,7 +112,7 @@ export function CategoryPage(){
                     <Label className="text-gray-600 text-base font-thin">Organize suas transações por categorias</Label>
                 </div>
 
-                <Button variant="default" className="font-normal">
+                <Button variant="default" className="font-normal" onClick={() => setOpenModal(true)}>
                     <Plus className="text-white"/>
                     Nova categoria
                 </Button>
@@ -137,5 +141,6 @@ export function CategoryPage(){
             </div>
         </div>
 
+        <DialogCategory open={openModal} onOpenChange={setOpenModal}/>
     </Page>
 };
