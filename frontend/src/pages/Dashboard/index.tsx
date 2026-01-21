@@ -5,8 +5,11 @@ import { CardRecentTransactions } from "./components/CardRecentTransactions";
 import type { Category, Transaction } from "@/types";
 import moment from "moment";
 import { CardCategories } from "./components/CardCategories";
+import { useState } from "react";
+import { DialogTransaction } from "./components/DialogTransaction";
 
 export function DashboardPage(){
+    const [openModal, setOpenModal] = useState<boolean>(false);
 
     const list : Transaction[] = [
         {
@@ -73,6 +76,7 @@ export function DashboardPage(){
                 <div className="col-span-2">                    
                     <CardRecentTransactions
                         list={list}
+                        onOpenModal={setOpenModal}
                     />
                 </div>
 
@@ -84,5 +88,6 @@ export function DashboardPage(){
             </div>
         </div>
 
+        <DialogTransaction open={openModal} onOpenChange={setOpenModal}/>
     </Page>
 };

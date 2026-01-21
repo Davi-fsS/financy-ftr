@@ -2,9 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/components/ui/card";
 import type { Transaction } from "@/types";
 import { Briefcase, ChevronRight, CircleArrowDown, CircleArrowUp, Film, Fuel, Home, Plus, ShoppingCart, TrendingUp, Utensils } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface CardRecentTransactionsProps {
     list: Transaction[] | null
+    onOpenModal: (open: boolean) => void
 }
 
 const categoryIcons: Record<string, React.ReactNode> = {
@@ -29,8 +31,7 @@ const categoryColors: Record<string, string> = {
     "Entretenimento": "bg-pink-100 text-pink-700",
 };
 
-export function CardRecentTransactions({ list } : CardRecentTransactionsProps){
-
+export function CardRecentTransactions({ list, onOpenModal } : CardRecentTransactionsProps){
     const handleTypeFormat = (type: string, value: number) => {
         const formatted = new Intl.NumberFormat("pt-BR", {
             style: "currency",
@@ -48,11 +49,13 @@ export function CardRecentTransactions({ list } : CardRecentTransactionsProps){
             <CircleArrowUp className="w-4 h-4 text-green-base"/>
         </div>
     };
+
+    const navigate = useNavigate();
     
     return <Card>
         <CardHeader className="py-5 px-4 flex flex-row justify-between items-center border-b border-gray-100">
             <CardDescription>TRANSAÇÕES RECENTES</CardDescription>
-            <Button variant="link">Ver todas <ChevronRight/></Button>
+            <Button onClick={() => navigate("/transactions")} variant="link">Ver todas <ChevronRight/></Button>
         </CardHeader>
 
         <CardContent className="p-0">
@@ -83,7 +86,7 @@ export function CardRecentTransactions({ list } : CardRecentTransactionsProps){
         </CardContent>
         
         <CardFooter className="py-4 px-5 flex flex-row justify-center items-center">
-            <Button variant="link">
+            <Button variant="link" onClick={() => onOpenModal(true)}>
                 <Plus className="text-brand-base"/>
                 Nova transação
             </Button>

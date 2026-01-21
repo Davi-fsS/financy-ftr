@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import type { Category } from "@/types";
 import { ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface CardCategoriesProps {
     list: Category[] | null
@@ -19,10 +20,12 @@ const categoryColors: Record<string, string> = {
 };
 
 export function CardCategories({ list } : CardCategoriesProps){
+    const navigate = useNavigate();
+
     return <Card>
         <CardHeader className="py-5 px-4 flex flex-row justify-between items-center border-b border-gray-100">
             <CardDescription>CATEGORIAS</CardDescription>
-            <Button variant="link">Gerenciar <ChevronRight/></Button>
+            <Button onClick={() => navigate("categories")} variant="link">Gerenciar <ChevronRight/></Button>
         </CardHeader>
 
         <CardContent className="p-0">
