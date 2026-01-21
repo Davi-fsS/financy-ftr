@@ -113,7 +113,7 @@ export function DialogCategory({ open, onOpenChange } : DialogCategoryProps){
             </div>
 
             <DialogFooter className="w-full">
-                <Button className="w-full">Salvar</Button>
+                <Button className="w-full py-6">Salvar</Button>
             </DialogFooter>
 
         </DialogContent>

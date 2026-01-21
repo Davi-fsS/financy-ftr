@@ -5,8 +5,12 @@ import { Plus } from "lucide-react";
 import { CardFilter } from "./components/CardFilter";
 import { Datagrid } from "./components/Datagrid";
 import { columns, type Transaction } from "./components/Datagrid/columns";
+import { useState } from "react";
+import { DialogTransaction } from "./components/DialogTransaction";
 
 export function TransactionPage(){
+    const [openModal, setOpenModal] = useState<boolean>(false);
+
     const transactions : Transaction[] = [
         {
             id: "1",
@@ -34,7 +38,7 @@ export function TransactionPage(){
                     <Label className="text-gray-600 text-base font-thin">Gerencie todas as suas transações financeiras</Label>
                 </div>
 
-                <Button variant="default" className="font-normal">
+                <Button variant="default" className="font-normal" onClick={() => setOpenModal(true)}>
                     <Plus className="text-white"/>
                     Nova transação
                 </Button>
@@ -48,5 +52,7 @@ export function TransactionPage(){
                 <Datagrid columns={columns} data={transactions}/>
             </div>
         </div>
+
+        <DialogTransaction open={openModal} onOpenChange={setOpenModal}/>
     </Page>
 };
