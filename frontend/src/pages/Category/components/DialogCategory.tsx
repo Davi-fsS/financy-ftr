@@ -4,7 +4,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { BaggageClaim, BookOpen, BriefcaseBusiness, CarFront, Dumbbell, Gift, HeartPulse, House, Mailbox, PawPrint, PiggyBank, ReceiptText, ShoppingCart, Ticket, ToolCase, Utensils, X } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useMutation } from "@apollo/client/react"
+import { CREATE_CATEGORY } from "@/lib/graphql/mutations/Category"
+import { toast } from "sonner"
 
 interface DialogCategoryProps {
     open: boolean
@@ -14,6 +17,8 @@ interface DialogCategoryProps {
 export function DialogCategory({ open, onOpenChange } : DialogCategoryProps){
     const [selectedIcon, setSelectedIcon] = useState<number | null>(0)
     const [selectedColor, setSelectedColor] = useState<number | null>(0)
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
 
     const icons : LucideIcon[] = [
         BriefcaseBusiness,
@@ -42,7 +47,37 @@ export function DialogCategory({ open, onOpenChange } : DialogCategoryProps){
         "bg-red-base",
         "bg-orange-base",
         "bg-yellow-base"
-    ]
+    ];
+
+    const [createIdea, { loading }] = useMutation(CREATE_CATEGORY, {
+        onCompleted(){
+            toast.success("Categoria criada com sucesso");
+            onOpenChange(false);
+        },
+        onError(){
+            toast.error("Falha ao criar a categoria");
+        }
+    });
+
+    const handleSubmit = async(e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            createIdea({
+                variables: {
+                    data: {
+                        name: title,
+                        description,
+                        color: colors[selectedColor!].replace("bg-", "").replace("-base", ""),
+                        icon: icons[selectedIcon!].displayName
+                    }
+                }
+            })
+        }
+        catch(e){
+            console.log(e)
+        }
+    };
 
     return <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="border-2 border-solid p-6 border-b-gray-200 flex flex-col gap-6">
@@ -62,12 +97,12 @@ export function DialogCategory({ open, onOpenChange } : DialogCategoryProps){
             <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="title" className="text-gray-700 font-medium text-sm">Título</Label>
-                    <Input id="title" className="border-b-gray-300 py-6" placeholder="Ex. Alimentação"/>
+                    <Input onChange={(e) => setTitle(e.target.value)} value={title} disabled={loading} id="title" className="border-b-gray-300 py-6" placeholder="Ex. Alimentação"/>
                 </div>
                 
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="description" className="text-gray-700 font-medium text-sm">Descrição</Label>
-                    <Input id="description" className="border-b-gray-300 py-6" placeholder="Descrição da categoria"/>
+                    <Input onChange={(e) => setDescription(e.target.value)} value={description} disabled={loading} id="description" className="border-b-gray-300 py-6" placeholder="Descrição da categoria"/>
                     <DialogDescription className="text-xs text-gray-500">Opcional</DialogDescription>
                 </div>
 
@@ -77,6 +112,7 @@ export function DialogCategory({ open, onOpenChange } : DialogCategoryProps){
                         {icons.map((Icon, index) => {
                             const isSelected = selectedIcon === index
                             return <button
+                                disabled={loading}
                                 key={index}
                                 onClick={() => setSelectedIcon(index)}
                                 className={`w-12 h-12 rounded-lg border-2 flex items-center justify-center transition-all ${
@@ -97,6 +133,7 @@ export function DialogCategory({ open, onOpenChange } : DialogCategoryProps){
                         {colors.map((color, index) => {
                             const isSelected = selectedColor === index
                             return <button
+                                disabled={loading}
                                 key={index}
                                 onClick={() => setSelectedColor(index)}
                                 className={`flex-1 rounded-lg border-2 p-1 transition-all ${
@@ -113,7 +150,7 @@ export function DialogCategory({ open, onOpenChange } : DialogCategoryProps){
             </div>
 
             <DialogFooter className="w-full">
-                <Button className="w-full py-6">Salvar</Button>
+                <Button disabled={loading} onClick={handleSubmit} className="w-full py-6">Salvar</Button>
             </DialogFooter>
 
         </DialogContent>

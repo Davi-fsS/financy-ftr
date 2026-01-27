@@ -1,108 +1,21 @@
 import { Page } from "@/components/Page";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { ArrowUpDown, Plus, Tag, Ticket, Utensils } from "lucide-react";
+import { ArrowUpDown, Plus, Tag, Utensils } from "lucide-react";
 import { CardResume } from "./components/CardResume";
 import { CardCategory } from "./components/CardCategory";
 import { DialogCategory } from "./components/DialogCategory";
 import { useState } from "react";
+import { useQuery } from "@apollo/client/react";
+import { GET_ALL_CATEGORY } from "@/lib/graphql/queries/Category";
+import type { Category } from "@/types";
 
 export function CategoryPage(){
 
     const [openModal, setOpenModal] = useState<boolean>(false);
+    const { data, loading, refetch } = useQuery<{ getAllCategory : Category[] }>(GET_ALL_CATEGORY);
 
-    const categories = [
-        {
-            id: 1,
-            iconName: Utensils,
-            iconColor: "blue",
-            title: "Alimentação",
-            description: "Restaurantes, delivery e refeições",
-            categoryName: "Alimentação",
-            quantity: 12
-        },
-        {
-            id: 2,
-            iconName: Ticket,
-            iconColor: "pink",
-            title: "Entretenimento",
-            description: "Cinema, jogos e lazer",
-            categoryName: "Entretenimento",
-            quantity: 2
-        },
-        {
-            id: 1,
-            iconName: Utensils,
-            iconColor: "blue",
-            title: "Alimentação",
-            description: "Restaurantes, delivery e refeições",
-            categoryName: "Alimentação",
-            quantity: 12
-        },
-        {
-            id: 2,
-            iconName: Ticket,
-            iconColor: "pink",
-            title: "Entretenimento",
-            description: "Cinema, jogos e lazer",
-            categoryName: "Entretenimento",
-            quantity: 2
-        },
-        {
-            id: 1,
-            iconName: Utensils,
-            iconColor: "blue",
-            title: "Alimentação",
-            description: "Restaurantes, delivery e refeições",
-            categoryName: "Alimentação",
-            quantity: 12
-        },
-        {
-            id: 2,
-            iconName: Ticket,
-            iconColor: "pink",
-            title: "Entretenimento",
-            description: "Cinema, jogos e lazer",
-            categoryName: "Entretenimento",
-            quantity: 2
-        },
-        {
-            id: 1,
-            iconName: Utensils,
-            iconColor: "blue",
-            title: "Alimentação",
-            description: "Restaurantes, delivery e refeições",
-            categoryName: "Alimentação",
-            quantity: 12
-        },
-        {
-            id: 2,
-            iconName: Ticket,
-            iconColor: "pink",
-            title: "Entretenimento",
-            description: "Cinema, jogos e lazer",
-            categoryName: "Entretenimento",
-            quantity: 2
-        },
-        {
-            id: 1,
-            iconName: Utensils,
-            iconColor: "blue",
-            title: "Alimentação",
-            description: "Restaurantes, delivery e refeições",
-            categoryName: "Alimentação",
-            quantity: 12
-        },
-        {
-            id: 2,
-            iconName: Ticket,
-            iconColor: "pink",
-            title: "Entretenimento",
-            description: "Cinema, jogos e lazer",
-            categoryName: "Entretenimento",
-            quantity: 2
-        },
-    ]
+    const categories = data?.getAllCategory || []
 
     return <Page>
         <div className="flex flex-col gap-8">
@@ -126,15 +39,16 @@ export function CategoryPage(){
 
             <div className="w-full grid grid-cols-4 gap-4 flex-wrap">
                 {
-                    categories.map((item, index) => {
+                    categories?.map((item : Category, index : number) => {
                         return <CardCategory 
+                            id=""
+                            valueTransactions={0}
                             key={`category-${item.id}-index-${index}`}
-                            icon={item.iconName} 
-                            iconColor={item.iconColor}
-                            title={item.title}
+                            icon={item.icon}
+                            color={item.color}
+                            name={item.name}
                             description={item.description}
-                            categoryName={item.categoryName}
-                            quantity={item.quantity}
+                            countTransactions={item.countTransactions} 
                         />
                     })
                 }

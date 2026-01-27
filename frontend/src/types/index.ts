@@ -32,4 +32,6 @@ export interface Category {
     description: string
     icon: string
     color: string
+    countTransactions?: number
+    valueTransactions?: number
 }

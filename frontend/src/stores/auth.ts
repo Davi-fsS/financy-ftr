@@ -1,9 +1,9 @@
 import type { LoginInput, RegisterInput, User } from "@/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { apolloClient } from "@/graphql/apollo";
-import { REGISTER } from "@/graphql/mutations/Register";
-import { LOGIN } from "@/graphql/mutations/Login";
+import { apolloClient } from "@/lib/graphql/apollo";
+import { REGISTER } from "@/lib/graphql/mutations/Register";
+import { LOGIN } from "@/lib/graphql/mutations/Login";
 
 type LoginMutationData = {
     login: {
