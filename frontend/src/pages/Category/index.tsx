@@ -5,7 +5,7 @@ import { ArrowUpDown, Plus, Tag, Utensils } from "lucide-react";
 import { CardResume } from "./components/CardResume";
 import { CardCategory } from "./components/CardCategory";
 import { DialogCategory } from "./components/DialogCategory";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client/react";
 import { GET_ALL_CATEGORY } from "@/lib/graphql/queries/Category";
 import type { Category } from "@/types";
@@ -13,7 +13,7 @@ import type { Category } from "@/types";
 export function CategoryPage(){
 
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const { data, loading, refetch } = useQuery<{ getAllCategory : Category[] }>(GET_ALL_CATEGORY);
+    const { data, loading } = useQuery<{ getAllCategory : Category[] }>(GET_ALL_CATEGORY);
 
     const categories = data?.getAllCategory || []
 
@@ -41,7 +41,7 @@ export function CategoryPage(){
                 {
                     categories?.map((item : Category, index : number) => {
                         return <CardCategory 
-                            id=""
+                            id={item.id}
                             valueTransactions={0}
                             key={`category-${item.id}-index-${index}`}
                             icon={item.icon}

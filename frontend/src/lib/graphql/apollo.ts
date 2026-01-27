@@ -12,7 +12,7 @@ const authLink = new SetContextLink((prevContext) => {
     return {
         headers: {
             ...prevContext.headers,
-            authorization: token ? `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU4N2UxYTFkLWFlNGUtNDBkZi1iNTQyLWQzYjIxNTY4ZTA0YyIsImVtYWlsIjoiZGF2aWZzc29hcmVzMjAwMkBnbWFpbC5jb20iLCJpYXQiOjE3Njk0Nzk3ODksImV4cCI6MTc2OTQ4MDY4OX0.jxaFb2aqcJgbHfe6nlyvLt-2Re7HKlY3IR7tolJuqpA` : ""
+            authorization: token ? `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU4N2UxYTFkLWFlNGUtNDBkZi1iNTQyLWQzYjIxNTY4ZTA0YyIsImVtYWlsIjoiZGF2aWZzc29hcmVzMjAwMkBnbWFpbC5jb20iLCJpYXQiOjE3Njk0ODA3OTQsImV4cCI6MTc2OTQ4MTY5NH0.HR7z8bqgd2RVi75JXo0BRib6yTc6n-LzYWCC8UFgX5g` : ""
         }
     }
 });
