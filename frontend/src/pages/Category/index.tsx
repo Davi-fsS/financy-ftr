@@ -5,7 +5,7 @@ import { ArrowUpDown, Plus, Tag, Utensils } from "lucide-react";
 import { CardResume } from "./components/CardResume";
 import { CardCategory } from "./components/CardCategory";
 import { DialogCategory } from "./components/DialogCategory";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@apollo/client/react";
 import { GET_ALL_CATEGORY } from "@/lib/graphql/queries/Category";
 import type { Category } from "@/types";
@@ -13,9 +13,10 @@ import type { Category } from "@/types";
 export function CategoryPage(){
 
     const [openModal, setOpenModal] = useState<boolean>(false);
+
     const { data, loading } = useQuery<{ getAllCategory : Category[] }>(GET_ALL_CATEGORY);
 
-    const categories = data?.getAllCategory || []
+    const categories = data?.getAllCategory || [];
 
     return <Page>
         <div className="flex flex-col gap-8">
@@ -25,7 +26,7 @@ export function CategoryPage(){
                     <Label className="text-gray-600 text-base font-thin">Organize suas transações por categorias</Label>
                 </div>
 
-                <Button variant="default" className="font-normal" onClick={() => setOpenModal(true)}>
+                <Button disabled={loading} variant="default" className="font-normal" onClick={() => setOpenModal(true)}>
                     <Plus className="text-white"/>
                     Nova categoria
                 </Button>
@@ -41,14 +42,8 @@ export function CategoryPage(){
                 {
                     categories?.map((item : Category, index : number) => {
                         return <CardCategory 
-                            id={item.id}
-                            valueTransactions={0}
+                            item={item}
                             key={`category-${item.id}-index-${index}`}
-                            icon={item.icon}
-                            color={item.color}
-                            name={item.name}
-                            description={item.description}
-                            countTransactions={item.countTransactions} 
                         />
                     })
                 }

@@ -17,7 +17,11 @@ export function ProfilePage(){
     const [name, setName] = useState(user?.name);
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async() => {
+    const logout = useAuthStore((state) => state.logout);
+
+    const handleSubmit = async(e: React.FormEvent) => {
+        e.preventDefault();
+
         setLoading(true);
 
         setTimeout(() => {
@@ -76,7 +80,7 @@ export function ProfilePage(){
                     <Button type="submit" className="w-full py-6" disabled={loading}>
                         Salvar alterações
                     </Button>
-                    <Button variant="outline" className="w-full py-6" disabled={loading}>
+                    <Button onClick={async() => await logout()} variant="outline" className="w-full py-6" disabled={loading}>
                         <LogOut className="text-red-600"/>
                         Sair da conta
                     </Button>

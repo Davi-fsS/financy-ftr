@@ -7,13 +7,11 @@ import { useMutation } from "@apollo/client/react"
 import { SquarePen, Trash } from "lucide-react"
 import * as LucideIcons from "lucide-react"
 import { toast } from "sonner"
+import { DialogCategory } from "./DialogCategory"
+import { useState } from "react"
 
-interface CardCategoryProps extends Category {
-    icon: string
-    name: string
-    description: string
-    countTransactions?: number
-    id: string
+interface CardCategoryProps {
+    item: Category
 }
 
 const colorMap: Record<string, { bg: string; text: string; dark: string }> = {
@@ -26,10 +24,12 @@ const colorMap: Record<string, { bg: string; text: string; dark: string }> = {
     red: { bg: "bg-red-light", text: "text-red-base", dark: "text-red-dark" },
 }
 
-export function CardCategory({ id, icon, color, name, description, countTransactions } : CardCategoryProps){    
+export function CardCategory({ item } : CardCategoryProps){    
+    const [openEdit, setOpenEdit] = useState<boolean>(false);
+    
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const IconComponent = (LucideIcons as any)[icon] || LucideIcons.HelpCircle
-    const colors = colorMap[color] || colorMap.pink // fallback
+    const IconComponent = (LucideIcons as any)[item.icon] || LucideIcons.HelpCircle
+    const colors = colorMap[item.color] || colorMap.pink // fallback
 
     const [deleteCategory, {loading}] = useMutation(DELETE_CATEGORY, {
         refetchQueries: [{ query: GET_ALL_CATEGORY }],
@@ -46,7 +46,7 @@ export function CardCategory({ id, icon, color, name, description, countTransact
         try {
             deleteCategory({
                 variables: {
-                    "deleteCategoryId": id
+                    "deleteCategoryId": item.id
                 }
             })
         }
@@ -59,7 +59,7 @@ export function CardCategory({ id, icon, color, name, description, countTransact
         <CardContent className="p-0 flex flex-col justify-between gap-5">
             <div className="flex justify-between items-center">
                 <div className={`w-10 h-10 flex items-center justify-center rounded-md ${colors.bg}`}>
-                    <IconComponent className={`w-5 h-5 text-gray-800 ${colors.text}`}/>
+                    <IconComponent className={`w-5 h-5 ${colors.text}`}/>
                 </div>
 
                 <div className="flex gap-2.5">
@@ -67,21 +67,23 @@ export function CardCategory({ id, icon, color, name, description, countTransact
                         <Trash className="text-feedback-danger"/>
                     </Button>
 
-                    <Button disabled={loading} variant="outline" className="w-9">
+                    <Button onClick={() => setOpenEdit(true)} disabled={loading} variant="outline" className="w-9">
                         <SquarePen className="text-gray-700"/>
                     </Button>
                 </div>
             </div>
 
             <div className="flex flex-col gap-1">
-                <CardTitle className="text-gray-800 text-md font-semibold">{name}</CardTitle>
-                <CardDescription className="text-gray-600 text-sm font-normal">{description}</CardDescription>
+                <CardTitle className="text-gray-800 text-md font-semibold">{item.name}</CardTitle>
+                <CardDescription className="text-gray-600 text-sm font-normal">{item.description}</CardDescription>
             </div>
         </CardContent>
         
         <CardContent className="p-0 flex justify-between items-center">
-            <CardDescription className={`${colors.dark} font-medium ${colors.bg} rounded-full px-3 py-1`}>{name}</CardDescription>
-            <CardDescription className="text-gray-600">{countTransactions} itens</CardDescription>
+            <CardDescription className={`${colors.dark} font-medium ${colors.bg} rounded-full px-3 py-1`}>{item.name}</CardDescription>
+            <CardDescription className="text-gray-600">{item.countTransactions} itens</CardDescription>
         </CardContent>
+
+        <DialogCategory data={item} open={openEdit} onOpenChange={setOpenEdit}/>
     </Card>
 };
