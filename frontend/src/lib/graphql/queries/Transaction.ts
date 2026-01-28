@@ -6,6 +6,7 @@ export const GET_ALL_TRANSACTION = gql`
             id,
             description,
             category {
+                id,
                 name,
                 icon,
                 description,

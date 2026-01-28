@@ -9,6 +9,9 @@ import { useState } from "react";
 import { DialogTransaction } from "./components/DialogTransaction";
 import { useQuery } from "@apollo/client/react";
 import { GET_ALL_TRANSACTION } from "@/lib/graphql/queries/Transaction";
+import moment from "moment";
+
+moment.locale("pt-BR")
 
 export function TransactionPage(){
     const [openModal, setOpenModal] = useState<boolean>(false);
@@ -17,7 +20,39 @@ export function TransactionPage(){
 
     const transactions = data?.getAllTransaction || [];
 
-    console.log(transactions)
+    const [filters, setFilters] = useState({
+        description: "",
+        type: null,
+        categoryId: null, 
+        date: ""
+    });
+
+    const filteredTransactions = transactions.filter(transaction => {
+        if (filters.description && !transaction.description.toLowerCase().includes(filters.description.toLowerCase())) {
+            return false;
+        }
+        
+        if (filters.type && transaction.type !== filters.type) {
+            return false;
+        }
+        
+        if (filters.categoryId && transaction.category.id !== filters.categoryId) {
+            return false;
+        }
+        
+        if (filters.date && moment(transaction.date).format("MMMM / YYYY") !== filters.date) {
+            return false;
+        }
+        
+        return true;
+    });
+
+    const dataOptions = new Set(transactions.map(item => moment(item.date).format("MMMM / YYYY")))
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleFilter = (filterData : any) => {
+        setFilters(filterData)
+    };
 
     return <Page>
         <div className="flex flex-col gap-8">
@@ -33,13 +68,9 @@ export function TransactionPage(){
                 </Button>
             </div>
 
-            <div>
-                <CardFilter/>
-            </div>
+            <CardFilter dataOptions={dataOptions} filters={filters} onChange={handleFilter}/>
 
-            <div>
-                <Datagrid columns={columns} data={transactions}/>
-            </div>
+            <Datagrid columns={columns} data={filteredTransactions}/>
         </div>
 
         <DialogTransaction open={openModal} onOpenChange={setOpenModal}/>
