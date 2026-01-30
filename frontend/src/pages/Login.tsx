@@ -32,7 +32,7 @@ export function Login(){
 
             if(loginMutate){
                 toast.success("Login realizado com sucesso!");
-                navigate("/dash")
+                navigate("/")
             }
         }
         catch(error){

@@ -100,7 +100,7 @@
 				green: {
 					dark: '#15803D',
 					base: '#16A34A',
-					light: '#EOFAE9'
+					light: '#F0FAE9'
 				}
     		},
     		borderRadius: {
