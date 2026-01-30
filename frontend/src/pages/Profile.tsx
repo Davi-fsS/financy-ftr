@@ -47,7 +47,7 @@ export function ProfilePage(){
     };
  
     return <Page> 
-        <div className="flex flex-col min-h-[calc(100vh-5rem)] items-center justify-center gap-6">
+        <div className="flex flex-col mt-10 items-center justify-center gap-6">
             <Card className="w-full max-w-md rounded-xl p-2">
                 <CardHeader className="flex items-center">
                     <Avatar className="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center mb-6">

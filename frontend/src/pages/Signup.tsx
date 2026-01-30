@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo.svg";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,7 +43,7 @@ export function Signup(){
     };
 
     return <div className="flex flex-col min-h-[calc(100vh-4rem)] items-center justify-center gap-6">
-        <img src={logo} className="w-64 h-22"/>
+        <img src={logo} className="w-40 h-22"/>
 
         <Card className="w-full max-w-md rounded-xl p-2">
             <CardHeader className="flex items-center">

@@ -1,4 +1,4 @@
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo.svg";
 import { getAvatarFallback } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
