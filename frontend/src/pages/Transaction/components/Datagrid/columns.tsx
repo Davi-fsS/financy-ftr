@@ -27,7 +27,7 @@ const colorMap: Record<string, { bg: string; text: string; }> = {
     red: { bg: "bg-red-light", text: "text-red-base" },
 }
 
-export const columns : ColumnDef<Transaction>[] = [
+export const columns = (onDelete: (id: string) => void, onEdit: (id: string) => void) : ColumnDef<Transaction>[] => [
     {
         accessorKey: "description",
         header: "DESCRIÇÃO",
@@ -101,13 +101,15 @@ export const columns : ColumnDef<Transaction>[] = [
     {
         accessorKey: "actions",
         header: () => <div className="text-right">AÇÕES</div>,
-        cell: () => {
+        cell: ({ row }) => {
+            const transaction = row.original;
+
             return <div className="flex justify-end gap-3">
-                <Button variant="outline" className="w-10 h-10">
+                <Button onClick={() => onDelete(transaction.id)} variant="outline" className="w-10 h-10">
                     <Trash className="text-feedback-danger w-4 h-4"/>
                 </Button>
 
-                <Button variant="outline" className="w-10 h-10">
+                <Button onClick={() => onEdit(transaction.id)} variant="outline" className="w-10 h-10">
                     <SquarePen className="text-gray-700 w-4 h-4"/>
                 </Button>
             </div>

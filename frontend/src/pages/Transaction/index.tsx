@@ -7,16 +7,31 @@ import { Datagrid } from "./components/Datagrid";
 import { columns, type Transaction } from "./components/Datagrid/columns";
 import { useState } from "react";
 import { DialogTransaction } from "./components/DialogTransaction";
-import { useQuery } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
 import { GET_ALL_TRANSACTION } from "@/lib/graphql/queries/Transaction";
 import moment from "moment";
+import type { Transaction as TransactionModal } from "@/types"
+import { DELETE_TRANSACTION } from "@/lib/graphql/mutations/Transaction";
+import { toast } from "sonner";
 
 moment.locale("pt-BR")
 
 export function TransactionPage(){
     const [openModal, setOpenModal] = useState<boolean>(false);
+    const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
+    const [transactionData, setTransactionData] = useState<TransactionModal | null>(null);
 
-    const { data, loading } = useQuery<{ getAllTransaction: Transaction[] }>(GET_ALL_TRANSACTION);
+    const { data, loading, refetch } = useQuery<{ getAllTransaction: Transaction[] }>(GET_ALL_TRANSACTION);
+
+    const [deleteTransaction, { loading : loadingDelete }] = useMutation(DELETE_TRANSACTION, {
+        onCompleted(){
+            toast.success("Transação removida com sucesso");
+            refetch();
+        },
+        onError(){
+            toast.error("Falha ao remover a transação");
+        }
+    })
 
     const transactions = data?.getAllTransaction || [];
 
@@ -54,6 +69,28 @@ export function TransactionPage(){
         setFilters(filterData)
     };
 
+    const handleDelete = async(id: string) => {
+        try{
+            await deleteTransaction({
+                variables: {
+                    deleteTransactionId: id
+                }
+            })
+        }
+        catch(e){
+            console.log(e)
+        }
+    };
+
+    const handleEdit = (id: string) => {
+        const item = transactions?.find(t => t.id === id);
+        
+        if (item) {
+            setTransactionData({ ...item, id: item.id, categoryId: item.category.id, date: moment(item.date).format("YYYY-MM-DD") });
+        }
+        setOpenModalEdit(true);
+    }
+
     return <Page>
         <div className="flex flex-col gap-8">
             <div className="flex justify-between items-center">
@@ -62,7 +99,7 @@ export function TransactionPage(){
                     <Label className="text-gray-600 text-base font-thin">Gerencie todas as suas transações financeiras</Label>
                 </div>
 
-                <Button disabled={loading} variant="default" className="font-normal" onClick={() => setOpenModal(true)}>
+                <Button disabled={loading || loadingDelete} variant="default" className="font-normal" onClick={() => setOpenModal(true)}>
                     <Plus className="text-white"/>
                     Nova transação
                 </Button>
@@ -70,9 +107,10 @@ export function TransactionPage(){
 
             <CardFilter dataOptions={dataOptions} filters={filters} onChange={handleFilter}/>
 
-            <Datagrid columns={columns} data={filteredTransactions}/>
+            <Datagrid columns={columns(handleDelete, handleEdit)} data={filteredTransactions}/>
         </div>
 
         <DialogTransaction open={openModal} onOpenChange={setOpenModal}/>
+        <DialogTransaction transaction={transactionData} open={openModalEdit} onOpenChange={setOpenModalEdit}/>
     </Page>
 };

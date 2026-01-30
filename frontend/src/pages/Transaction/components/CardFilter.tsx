@@ -47,7 +47,7 @@ export function CardFilter({ dataOptions, filters, onChange } : CardFilterProps)
                 </SelectTrigger>
                 <SelectContent>
                     <SelectGroup>
-                        <SelectItem value="clear">Limpar</SelectItem>
+                        <SelectItem value="clear">Todos</SelectItem>
                         <SelectItem value="Saida">Saída</SelectItem>
                         <SelectItem value="Entrada">Entrada</SelectItem>
                     </SelectGroup>
@@ -63,7 +63,7 @@ export function CardFilter({ dataOptions, filters, onChange } : CardFilterProps)
                 </SelectTrigger>
                 <SelectContent>
                     <SelectGroup>
-                        <SelectItem value="clear">Limpar</SelectItem>
+                        <SelectItem value="clear">Todas</SelectItem>
                         {categories.map(item => {
                             return <SelectItem value={item.id}>{item.name}</SelectItem>
                         })}
@@ -80,7 +80,7 @@ export function CardFilter({ dataOptions, filters, onChange } : CardFilterProps)
                 </SelectTrigger>
                 <SelectContent>
                     <SelectGroup>
-                        <SelectItem value="clear">Limpar</SelectItem>
+                        <SelectItem value="clear">Selecione um período</SelectItem>
                         {
                             Array.from(dataOptions).map(item => {
                                 return <SelectItem key={item} value={item}>{item}</SelectItem>

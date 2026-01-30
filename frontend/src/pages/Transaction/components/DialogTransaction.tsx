@@ -3,27 +3,39 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CREATE_TRANSACTION } from "@/lib/graphql/mutations/Transaction"
+import { CREATE_TRANSACTION, UPDATE_TRANSACTION } from "@/lib/graphql/mutations/Transaction"
 import { GET_ALL_CATEGORY } from "@/lib/graphql/queries/Category"
 import { GET_ALL_TRANSACTION } from "@/lib/graphql/queries/Transaction"
-import type { Category } from "@/types"
+import type { Category, Transaction } from "@/types"
 import { useMutation, useQuery } from "@apollo/client/react"
 import { CircleArrowDown, CircleArrowUp, X } from "lucide-react"
 import moment from "moment"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 interface DialogTransactionProps {
+    transaction?: Transaction | null
     open: boolean
     onOpenChange: (open: boolean) => void
 }
 
-export function DialogTransaction({ open, onOpenChange } : DialogTransactionProps){
+export function DialogTransaction({ transaction, open, onOpenChange } : DialogTransactionProps){
     const [isReceita, setIsReceita] = useState<boolean>(false);
     const [description, setDescription] = useState<string>("");
     const [date, setDate] = useState<string>("");
     const [value, setValue] = useState<number>(0);
     const [categoryId, setCategoryId] = useState<string>("");
+
+    useEffect(() => {
+        if(transaction){
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setDescription(transaction.description);
+            setDate(transaction.date);
+            setValue(transaction.value);
+            setCategoryId(transaction.categoryId!);
+            setIsReceita(transaction.type === "Entrada")
+        }
+    }, [transaction]);
 
     const [createTransaction, { loading }] = useMutation(CREATE_TRANSACTION, {
         refetchQueries: [{ query: GET_ALL_TRANSACTION }],
@@ -37,6 +49,18 @@ export function DialogTransaction({ open, onOpenChange } : DialogTransactionProp
         }
     });
 
+    const [updateTransaction, { loading : loadingTransaction }] = useMutation(UPDATE_TRANSACTION, {
+            refetchQueries: [{ query: GET_ALL_TRANSACTION }],
+            awaitRefetchQueries: true,
+            onCompleted(){
+                toast.success("Transação editada com sucesso");
+                onOpenChange(false);
+            },
+            onError(){
+                toast.error("Falha ao editar a transação");
+            }
+        });
+
     const { data } = useQuery<{ getAllCategory : Category[] }>(GET_ALL_CATEGORY);
     
     const categories = data?.getAllCategory.map(item => ({
@@ -48,17 +72,33 @@ export function DialogTransaction({ open, onOpenChange } : DialogTransactionProp
         e.preventDefault();
 
         try{
-            createTransaction({
-                variables: {
-                    data: {
-                        description,
-                        date: moment(date).toISOString(),
-                        categoryId,
-                        value,
-                        type: isReceita ? "Entrada" : "Saida"
+            if(transaction){
+                updateTransaction({
+                    variables: {
+                        updateTransactionId: transaction.id,
+                        data: {
+                            description,
+                            date: moment(date).toISOString(),
+                            categoryId,
+                            value,
+                            type: isReceita ? "Entrada" : "Saida"
+                        }
                     }
-                }
-            })
+                })
+            }
+            else{
+                createTransaction({
+                    variables: {
+                        data: {
+                            description,
+                            date: moment(date).toISOString(),
+                            categoryId,
+                            value,
+                            type: isReceita ? "Entrada" : "Saida"
+                        }
+                    }
+                })
+            }
         }
         catch(e){
             console.log(e)
@@ -68,7 +108,7 @@ export function DialogTransaction({ open, onOpenChange } : DialogTransactionProp
     return <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="border-2 border-solid p-6 border-gray-200 flex flex-col gap-6">
             <button
-                disabled={loading}
+                disabled={loading || loadingTransaction}
                 onClick={() => onOpenChange(false)}
                 className="border-2 border-solid border-gray-300 rounded-lg text-gray-700 absolute right-2.5 top-2.5 p-1 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
             >
@@ -129,7 +169,7 @@ export function DialogTransaction({ open, onOpenChange } : DialogTransactionProp
             </div>
 
             <DialogFooter className="w-full">
-                <Button disabled={loading} onClick={handleSubmit} className="w-full py-6">Salvar</Button>
+                <Button disabled={loading || loadingTransaction} onClick={handleSubmit} className="w-full py-6">Salvar</Button>
             </DialogFooter>
 
         </DialogContent>
