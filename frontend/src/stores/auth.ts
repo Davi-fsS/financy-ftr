@@ -28,6 +28,7 @@ interface AuthState {
     login: (data: LoginInput) => Promise<boolean>
     signup: (data: RegisterInput) => Promise<boolean>
     logout: () => void
+    update: (user: User, name: string) => void
 }
 
 export const useAuthStore = create<AuthState>() (
@@ -113,6 +114,13 @@ export const useAuthStore = create<AuthState>() (
                     throw error;
                 }
             },
+
+            update: async(user : User, name: string) => {
+                set({
+                    user: {...user, name: name }
+                })
+            },
+
             logout: () => {
                 set({
                   user:null,

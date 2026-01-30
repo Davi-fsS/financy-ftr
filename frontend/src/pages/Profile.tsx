@@ -4,29 +4,46 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { UPDATE_USER } from "@/lib/graphql/mutations/User";
 import { getAvatarFallback } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth";
+import { useMutation } from "@apollo/client/react";
 import { Label } from "@radix-ui/react-label";
 import { LogOut } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function ProfilePage(){
 
     const { user } = useAuthStore();
 
     const [name, setName] = useState(user?.name);
-    const [loading, setLoading] = useState(false);
 
     const logout = useAuthStore((state) => state.logout);
+    const update = useAuthStore((state) => state.update);
+
+    const [updateUser, { loading }] = useMutation(UPDATE_USER, {
+        onCompleted(){
+            toast.success("Usuário editada com sucesso");
+        },
+        onError(){
+            toast.error("Falha ao editar o usuário");
+        }
+    });
 
     const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
 
-        setLoading(true);
+        updateUser({
+            variables: {
+                updateUserId: user?.id,
+                data: {
+                    name: name
+                }
+            }
+        })
 
-        setTimeout(() => {
-            setLoading(false);
-        }, 1000);
+        update(user!, name!);
     };
  
     return <Page> 
@@ -48,7 +65,7 @@ export function ProfilePage(){
                 <Separator className="my-5 w-[90%] mx-auto"/>
 
                 <CardContent className="my-4">
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="name">Nome completo</Label>
                             <Input 
@@ -77,7 +94,7 @@ export function ProfilePage(){
                 </CardContent>
 
                 <CardFooter className="flex flex-col gap-4">
-                    <Button type="submit" className="w-full py-6" disabled={loading}>
+                    <Button onClick={handleSubmit} className="w-full py-6" disabled={loading}>
                         Salvar alterações
                     </Button>
                     <Button onClick={async() => await logout()} variant="outline" className="w-full py-6" disabled={loading}>

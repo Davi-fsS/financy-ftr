@@ -10,10 +10,10 @@ export function getAvatarFallback(userName?: string){
     const nameArray = userName.split(" ");
 
     if(nameArray.length > 1){
-      return `${nameArray[0][0]}${nameArray[nameArray.length - 1][0]}`
+      return `${nameArray[0][0]}${nameArray[nameArray.length - 1][0]}`.toUpperCase()
     }
     
-    return nameArray[0][0]
+    return nameArray[0][0].toUpperCase();
   }
   else{
     return "UK"
