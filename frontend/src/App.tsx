@@ -20,7 +20,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 function App() {
   const { isAuthenticated } = useAuthStore();
-  
+
   return (
     <Layout>
       <Routes>
@@ -28,8 +28,8 @@ function App() {
           isAuthenticated ?
             <DashboardPage/>
           :
-            <Login/>
-          }/>
+          <Login/>
+        }/>
         <Route path='/signup' element={
           <PublicRoute>
             <Signup/>

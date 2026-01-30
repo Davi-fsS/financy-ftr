@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { UserRoundPlus } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/auth";
 import { toast } from "sonner";
 
@@ -16,6 +16,8 @@ export function Login(){
     const [loading, setLoading] = useState(false);
 
     const login = useAuthStore((state) => state.login);
+
+    const navigate = useNavigate();
     
     const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
@@ -30,7 +32,7 @@ export function Login(){
 
             if(loginMutate){
                 toast.success("Login realizado com sucesso!");
-                
+                navigate("/dash")
             }
         }
         catch(error){

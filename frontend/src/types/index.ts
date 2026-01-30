@@ -21,7 +21,10 @@ export interface Transaction {
     id: string
     description: string
     date: string
+    category?: Category
     categoryId: string | undefined
+    monthBalance?: { expenses: number | 0, revenues: number | 0 }
+    totalBalance?: number
     value: number
     type: string
 }

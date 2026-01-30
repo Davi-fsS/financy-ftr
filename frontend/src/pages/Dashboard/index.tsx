@@ -3,49 +3,39 @@ import { CardResume } from "./components/CardResume";
 import { CircleArrowDown, CircleArrowUp, Wallet } from "lucide-react";
 import { CardRecentTransactions } from "./components/CardRecentTransactions";
 import type { Category, Transaction } from "@/types";
-import moment from "moment";
 import { CardCategories } from "./components/CardCategories";
-import { useState } from "react";
-import { DialogTransaction } from "./components/DialogTransaction";
+import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@apollo/client/react";
+import { GET_ALL_TRANSACTION } from "@/lib/graphql/queries/Transaction";
+import moment from "moment";
+import { formatCurrency } from "@/lib/utils";
+import { GET_ALL_CATEGORY } from "@/lib/graphql/queries/Category";
+import { DialogTransaction } from "../Transaction/components/DialogTransaction";
 
 export function DashboardPage(){
     const [openModal, setOpenModal] = useState<boolean>(false);
 
-    const list : Transaction[] = [
-        {
-            id: "1",
-            description: "Pagamento de Salário",
-            date: moment().format("DD/MM/YY"),
-            categoryId: "1",
-            value: 42500,
-            type: "Entrada"
-        },
-        {
-            id: "1",
-            description: "Comida",
-            date: moment().format("DD/MM/YY"),
-            categoryId: "1",
-            value: 200,
-            type: "Saída"
-        },
-    ]
+    const { data : transaction } = useQuery<{ getAllTransaction: Transaction[] }>(GET_ALL_TRANSACTION);
 
-    const categories : Category[] = [
-        {
-            id: "1",
-            name: "Alimentação",
-            description: "aaaa",
-            icon: "aaa",
-            color: "blue"
-        },
-        {
-            id: "1",
-            name: "Transporte",
-            description: "aaaa",
-            icon: "aaa",
-            color: "blue"
-        },
-    ] 
+    const transactions : Transaction[] = useMemo(() => 
+        transaction?.getAllTransaction?.map(item => ({...item, date: moment(item.date).format("DD/MM/YYYY")})) || [], 
+        [transaction]
+    );
+
+    const { data : category } = useQuery<{ getAllCategory : Category[] }>(GET_ALL_CATEGORY);
+
+    const categories = category?.getAllCategory || [];
+
+    const [totalBalance, setTotalBalance] = useState<number>(0);
+    const [monthBalance, setMonthBalance] = useState<{ expenses: number, revenues: number}>({ expenses: 0, revenues: 0 });
+
+    useEffect(() => {
+        if(transactions.length > 0){
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setTotalBalance(transactions[0].totalBalance!);
+            setMonthBalance(transactions[0].monthBalance!);
+        }
+    }, [transactions]);
 
     return <Page>
         <div className="flex flex-col gap-6">
@@ -53,21 +43,21 @@ export function DashboardPage(){
                 <CardResume
                     icon={Wallet}
                     iconColor="text-purple-base"
-                    content={"R$ 12.847,32"}
+                    content={formatCurrency(totalBalance!)}
                     title="SALDO TOTAL"
                 />
 
                 <CardResume
                     icon={CircleArrowUp}
-                    iconColor="text-brand-base"
-                    content={"R$ 12.847,32"}
+                    iconColor="text-green-base"
+                    content={formatCurrency(monthBalance?.revenues ?? 0)}
                     title="RECEITA DO MÊS"
                 />
 
                 <CardResume
                     icon={CircleArrowDown}
                     iconColor="text-red-base"
-                    content={"R$ 2.180,45"}
+                    content={formatCurrency(monthBalance?.expenses ?? 0)}
                     title="DESPESA DO MÊS"
                 />
             </div>
@@ -75,7 +65,7 @@ export function DashboardPage(){
             <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">                    
                     <CardRecentTransactions
-                        list={list}
+                        list={transactions}
                         onOpenModal={setOpenModal}
                     />
                 </div>
